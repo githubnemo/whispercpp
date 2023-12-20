@@ -15,6 +15,9 @@ exports_files(
 HEADERS = [
 ] + glob(["*.h"])
 
+OPENVINO_HEADERS = glob(["openvino/*.h"])
+OPENVINO_SOURCES = glob(["openvino/*.cpp"])
+
 EXAMPLE_HEADERS = [
     "examples/common-sdl.h",
     "examples/common.h",
@@ -96,7 +99,9 @@ cc_library(
 
 cc_library(
     name = "ggml",
-    srcs = ["ggml.c"],
+    srcs = [
+        "ggml.c",
+    ],
     hdrs = HEADERS,
     copts = CFLAGS + selects.with_or({
         "//conditions:default": [],
@@ -119,8 +124,8 @@ cc_library(
 
 cc_library(
     name = "whisper",
-    srcs = ["whisper.cpp"],
-    hdrs = HEADERS + EXAMPLE_HEADERS,
+    srcs = ["whisper.cpp"] + OPENVINO_SOURCES,
+    hdrs = HEADERS + EXAMPLE_HEADERS + OPENVINO_HEADERS,
     copts = CXXFLAGS + selects.with_or({
         "//conditions:default": [],
         "@bazel_tools//src/conditions:linux_x86_64": [
